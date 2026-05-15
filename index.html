@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2c5530">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Generador de Cotizaciones - San Isidro</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 10px auto;
+            padding: 15px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c5530;
+            margin: 0 0 5px 0;
+            font-size: 22px;
+        }
+        .slogan {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .empresa {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .empresa input {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #2c5530;
+            color: white;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .cantidad, .precio { width: 90px; }
+        .total-linea {
+            text-align: right;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .btn {
+            background: #2c5530;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+        }
+        .btn:hover { background: #1e3a21; }
+        .btn-danger { background: #c0392b; }
+        .btn-danger:hover { background: #a93226; }
+        .btn-secondary { background: #3498db; }
+        .btn-secondary:hover { background: #2980b9; }
+        .total-final {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+        .notas textarea {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #modalHistorial {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .close-modal:hover { color: #000; }
+        .historial-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .historial-info { flex: 1; }
+        .historial-acciones button { padding: 6px 10px; font-size: 14px; }
+        @media print {
+            .no-print { display: none; }
+            body { background: white; margin: 0; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>COTIZACIÓN</h1>
+        <div class="slogan">AGROPECUARIA Y FERRETERÍA SAN ISIDRO<br>"Todo para el campo y la construcción"</div>
+        
+        <div class="empresa">
+            <input type="text" id="cliente" placeholder="Nombre del Cliente">
+            <input type="text" id="telefono" placeholder="Teléfono">
+            <input type="date" id="fecha">
+        </div>
+
+        <table id="tablaProductos">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">Cant.</th>
+                    <th>Descripción</th>
+                    <th style="width: 110px;">Precio U.</th>
+                    <th style="width: 130px;">Total</th>
+                    <th class="no-print" style="width: 60px;"></th>
+                </tr>
+            </thead>
+            <tbody id="productos">
+            </tbody>
+        </table>
+
+        <div class="no-print">
+            <button class="btn" onclick="agregarFila()">+ Agregar Producto</button>
+            <button class="btn btn-secondary" onclick="guardarCotizacion()">💾 Guardar Cotización</button>
+            <button class="btn btn-secondary" onclick="mostrarHistorial()">📋 Ver Historial</button>
+            <button class="btn" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+            <button class="btn btn-danger" onclick="limpiarTodo()">Limpiar Todo</button>
+        </div>
+
+        <div class="total-final">
+            TOTAL COTIZADO: L <span id="totalFinal">0.00</span>
+        </div>
+
+        <div class="notas">
+            <strong>NOTAS:</strong><br>
+            <textarea id="notas">1. Precios válidos por 8 días
+2. Láminas se cortan a medida sin costo</textarea>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <strong>Atendido por:</strong> _________________________
+        </div>
+    </div>
+
+    <div id="modalHistorial" class="no-print">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Historial de Cotizaciones</h2>
+                <span class="close-modal" onclick="cerrarHistorial()">&times;</span>
+            </div>
+            <div id="listaHistorial"></div>
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        document.getElementById('fecha').valueAsDate = new Date();
+        agregarFila();
+
+        function formatearNumero(num) {
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function agregarFila() {
+            const tbody = document.getElementById('productos');
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td><input type="number" class="cantidad" min="1" value="1" oninput="calcular()"></td>
+                <td><input type="text" class="descripcion" placeholder="Producto"></td>
+                <td><input type="number" class="precio" min="0" step="0.01" value="0" oninput="calcular()"></td>
+                <td class="total-linea">L 0.00</td>
+                <td class="no-print"><button class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
+            `;
+            tbody.appendChild(fila);
+        }
+
+        function eliminarFila(btn) {
+            btn.closest('tr').remove();
+            calcular();
+        }
+
+        function calcular() {
+            let total = 0;
+            const filas = document.querySelectorAll('#productos tr');
+            
+            filas.forEach(fila => {
+                const cant = parseFloat(fila.querySelector('.cantidad').value) || 0;
+                const precio = parseFloat(fila.querySelector('.precio').value) || 0;
+                const subtotal = cant * precio;
+                fila.querySelector('.total-linea').textContent = 'L ' + formatearNumero(subtotal);
+                total += subtotal;
+            });
+            
+            document.getElementById('totalFinal').textContent = formatearNumero(total);
+        }
+
+        function limpiarTodo() {
+            if(confirm('¿Borrar toda la cotización?')) {
+                document.getElementById('productos').innerHTML = '';
+                document.getElementById('cliente').value = '';
+                document.getElementById('telefono').value = '';
+                document.getElementById('totalFinal').textContent = '0.00';
+                agregarFila();
+            }
+        }
+
+        function guardarCotizacion() {
+            const cliente = document.getElementById('cliente').value.trim();
+            if (!cliente) {
+                alert('Ponle nombre al cliente antes de guardar');
+                return;
+            }
+
+            const productos = [];
+            document.querySelectorAll('#productos tr').forEach(fila => {
+                productos.push({
+                    cantidad: fila.querySelector('.cantidad').value,
+                    descripcion: fila.querySelector('.descripcion').value,
+                    precio: fila.querySelector('.precio').value
+                });
+            });
+
+            const cotizacion = {
+                id: Date.now(),
+                cliente: cliente,
+                telefono: document.getElementById('telefono').value,
+                fecha: document.getElementById('fecha').value,
+                productos: productos,
+                notas: document.getElementById('notas').value,
+                total: document.getElementById('totalFinal').textContent
+            };
+
+            let historial = JSON.parse(localStorage.getItem('cotizacionesSanIsidro') || '[]');
+            historial.unshift(cotizacion);
+            localStorage.setItem('cotizacionesSanIsidro', JSON.stringify(historial));
+            alert('Cotización guardada pa ' + cliente);
+        }
+
+        function mostrarHistorial() {
+            const historial = JSON.parse(localStorage.getItem('cotizacionesSanIsidro') || '[]');
+            const lista = document.getElementById('listaHistorial');
+            
+            if (historial.length === 0) {
+                lista.innerHTML = '<p>No hay cotizaciones guardadas todavía.</p>';
+            } else {
+                lista.innerHTML = historial.map(c => `
+                    <div class="historial-item">
+                        <div class="historial-info">
+                            <strong>${c.cliente}</strong> - L ${c.total}<br>
+                            <small>Fecha: ${c.fecha} | Tel: ${c.telefono || 'N/A'}</small>
+                        </div>
+                        <div class="historial-acciones">
+                            <button class="btn btn-secondary" onclick="cargarCotizacion(${c.id})">Cargar</button>
+                            <button class="btn btn-danger" onclick="borrarCotizacion(${c.id})">Borrar</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('modalHistorial').style.display = 'block';
+        }
+
+        function cerrarHistorial() {
+            document.getElementById('modalHistorial').style.display = 'none';
+        }
+
+        function cargarCotizacion(id) {
+            const historial = JSON.parse(localStorage.getItem('cotizacionesSanIsidro') || '[]');
+            const c = historial.find(item => item.id === id);
+            if (!c) return;
+
+            document.getElementById('cliente').value = c.cliente;
+            document.getElementById('telefono').value = c.telefono;
+            document.getElementById('fecha').value = c.fecha;
+            document.getElementById('notas').value = c.notas;
+            
+            document.getElementById('productos').innerHTML = '';
+            c.productos.forEach(p => {
+                const tbody = document.getElementById('productos');
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td><input type="number" class="cantidad" min="1" value="${p.cantidad}" oninput="calcular()"></td>
+                    <td><input type="text" class="descripcion" value="${p.descripcion}" placeholder="Producto"></td>
+                    <td><input type="number" class="precio" min="0" step="0.01" value="${p.precio}" oninput="calcular()"></td>
+                    <td class="total-linea">L 0.00</td>
+                    <td class="no-print"><button class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
+                `;
+                tbody.appendChild(fila);
+            });
+            
+            calcular();
+            cerrarHistorial();
+        }
+
+        function borrarCotizacion(id) {
+            if (!confirm('¿Seguro que quieres borrar esta cotización del historial?')) return;
+            
+            let historial = JSON.parse(localStorage.getItem('cotizacionesSanIsidro') || '[]');
+            historial = historial.filter(item => item.id !== id);
+            localStorage.setItem('cotizacionesSanIsidro', JSON.stringify(historial));
+            mostrarHistorial();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalHistorial');
+            if (event.target === modal) {
+                cerrarHistorial();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "Cotizaciones San Isidro",
+  "short_name": "San Isidro",
+  "start_url": "./Cotizador.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c5530"
+}
