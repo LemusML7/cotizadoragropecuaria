@@ -1,8 +1,21 @@
 {
-  "name": "Cotizaciones San Isidro",
+  "name": "Cotizador San Isidro",
   "short_name": "San Isidro",
-  "start_url": "./Cotizador.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2c5530"
+  "theme_color": "#2e7d32",
+  "description": "Cotizador Agropecuaria y Ferretería San Isidro",
+  "icons": [
+    {
+      "src": "launchericon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "launchericon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
