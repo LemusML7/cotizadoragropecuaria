@@ -1,434 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2e7d32">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cotizador San Isidro">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<title>Cotizador Agropecuaria San Isidro</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<style>
-    * {
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  body {
-    padding: 20px;
-    background: #f5f5f5;
-    margin: 0;
-  }
- .container {
-    max-width: 850px;
-    margin: 0 auto;
-    background: white;
-    padding: 40px;
-  }
- .header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
- .header h1 {
-    color: #2e7d32;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0 0 10px 0;
-    letter-spacing: 1px;
-  }
- .header p {
-    color: #666;
-    font-size: 14px;
-    margin: 5px 0;
-    font-style: italic;
-  }
- .form-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
- .form-row input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 14px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  table, th, td {
-    border: 1px solid #ddd;
-  }
-  th {
-    background: #f5f5f5;
-    color: #888;
-    font-weight: normal;
-    font-size: 14px;
-    padding: 10px;
-    text-align: left;
-  }
-  td {
-    padding: 5px;
-  }
-  td input {
-    width: 100%;
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-    font-size: 14px;
-    border-radius: 3px;
-  }
-  td.total-cell {
-    font-weight: bold;
-    font-size: 15px;
-    text-align: right;
-    padding-right: 15px;
-  }
- .btn-add {
-    background: #2e7d32;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    font-size: 14px;
-  }
- .total-section {
-    text-align: right;
-    margin: 30px 0;
-    font-size: 18px;
-    font-weight: bold;
-  }
- .notas-section {
-    margin-top: 30px;
-  }
- .notas-section label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 8px;
-  }
- .notas-section textarea {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 10px;
-    min-height: 60px;
-    resize: vertical;
-  }
- .firma {
-    margin-top: 30px;
-    font-weight: bold;
-  }
- .botones {
-    margin-top: 30px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
- .botones button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-  }
- .btn-save { background: #2e7d32; color: white; }
- .btn-pdf { background: #1976d2; color: white; }
- .btn-print { background: #555; color: white; }
- .btn-new { background: #888; color: white; }
- .historial {
-    margin-top: 40px;
-    border-top: 2px solid #2e7d32;
-    padding-top: 20px;
-  }
- .historial-item {
-    background: #f9f9f9;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 3px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
- .no-print {
-    display: block;
-  }
-  @media print {
-    body { background: white; padding: 0; }
-   .container { padding: 20px; box-shadow: none; }
-   .no-print { display: none!important; }
-    input, textarea { border: none; padding: 0; }
-    td input { border: none; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2e7d32">
+  <title>Cotizador San Isidro</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="launchericon-192x192.png">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#f5f5f5;padding:15px}
+    .container{max-width:800px;margin:0 auto;background:white;padding:20px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+    h1{color:#2e7d32;text-align:center;margin-bottom:20px;font-size:24px}
+    .form-group{margin-bottom:15px}
+    label{display:block;margin-bottom:5px;font-weight:bold;color:#333}
+    input,select{width:100%;padding:10px;border:1px solid #ddd;border-radius:5px;font-size:16px}
+    button{background:#2e7d32;color:white;border:none;padding:12px;width:100%;border-radius:5px;font-size:16px;cursor:pointer;margin-top:10px}
+    button:hover{background:#1b5e20}
+    .resultado{margin-top:20px;padding:15px;background:#e8f5e9;border-radius:5px;display:none}
+    .resultado h3{color:#2e7d32;margin-bottom:10px}
+    .precio{font-size:28px;font-weight:bold;color:#2e7d32;text-align:center}
+    .atendido{margin-top:15px;text-align:center;color:#555;font-size:14px;border-top:1px solid #ddd;padding-top:10px}
+    @media print{.form-group,button{display:none}}
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>COTIZACIÓN</h1>
-    <p>AGROPECUARIA Y FERRETERÍA SAN ISIDRO</p>
-    <p>"Todo para el campo y la construcción"</p>
-  </div>
-
-  <input type="hidden" id="cotizacionId">
-
-  <div class="form-row">
-    <input type="text" id="nombre" placeholder="Cotización Luis">
-    <input type="text" id="telefono" placeholder="Teléfono">
-    <input type="date" id="fecha">
-  </div>
-
-  <table id="tablaProductos">
-    <thead>
-      <tr>
-        <th style="width: 80px;">Cant.</th>
-        <th>Descripción</th>
-        <th style="width: 120px;">Precio U.</th>
-        <th style="width: 150px;">Total</th>
-        <th class="no-print" style="width: 40px;"></th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <button class="btn-add no-print" onclick="agregarFila()">+ Agregar Producto</button>
-
-  <div class="total-section">
-    TOTAL COTIZADO: <span id="totalCotizado">L 0.00</span>
-  </div>
-
-  <div class="notas-section">
-    <label>NOTAS:</label>
-    <textarea id="notas" placeholder=""></textarea>
-  </div>
-
-  <div class="firma">
-    Atendido por: <span id="atendidoPor">MELVIN LEMUS</span>
-  </div>
-
-  <div class="botones no-print">
-    <button class="btn-save" onclick="guardarCotizacion()">💾 Guardar</button>
-    <button class="btn-pdf" id="btnPDF">📄 Guardar PDF</button>
-    <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
-    <button class="btn-new" onclick="limpiarFormulario()">🆕 Nueva</button>
-  </div>
-
-  <div class="historial no-print">
-    <h3>Historial de Cotizaciones</h3>
-    <div id="listaHistorial"></div>
-  </div>
-</div>
-
-<script>
-let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
-
-function formatearNumero(num) {
-  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function agregarFila(cant="", desc="", precio="") {
-  const tbody = document.querySelector('#tablaProductos tbody');
-  const fila = document.createElement('tr');
-  fila.innerHTML = `
-    <td><input type="number" value="${cant}" oninput="calcular()"></td>
-    <td><input type="text" value="${desc}" placeholder="" oninput="calcular()"></td>
-    <td><input type="number" value="${precio}" oninput="calcular()"></td>
-    <td class="total-cell">L 0.00</td>
-    <td class="no-print"><button onclick="this.closest('tr').remove(); calcular()" style="background:#c62828;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">X</button></td>
-  `;
-  tbody.appendChild(fila);
-  calcular();
-}
-
-function calcular() {
-  let total = 0;
-  document.querySelectorAll('#tablaProductos tbody tr').forEach(fila => {
-    const inputs = fila.querySelectorAll('input');
-    const cant = parseFloat(inputs[0].value) || 0;
-    const precio = parseFloat(inputs[2].value) || 0;
-    const subtotal = cant * precio;
-    fila.querySelector('.total-cell').innerText = `L ${formatearNumero(subtotal)}`;
-    total += subtotal;
-  });
-  document.getElementById('totalCotizado').innerText = `L ${formatearNumero(total)}`;
-}
-
-function guardarCotizacion() {
-  const id = document.getElementById('cotizacionId').value || Date.now();
-  const datos = {
-    id: id,
-    nombre: document.getElementById('nombre').value,
-    telefono: document.getElementById('telefono').value,
-    fecha: document.getElementById('fecha').value,
-    notas: document.getElementById('notas').value,
-    productos: [],
-    total: document.getElementById('totalCotizado').innerText
-  };
-
-  document.querySelectorAll('#tablaProductos tbody tr').forEach(fila => {
-    const inputs = fila.querySelectorAll('input');
-    datos.productos.push({
-      cant: inputs[0].value,
-      desc: inputs[1].value,
-      precio: inputs[2].value,
-      subtotal: fila.querySelector('.total-cell').innerText
-    });
-  });
-
-  const index = cotizaciones.findIndex(c => c.id == id);
-  if (index >= 0) cotizaciones[index] = datos;
-  else cotizaciones.push(datos);
-
-  localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
-  mostrarHistorial();
-  alert('Cotización guardada');
-}
-
-function cargarCotizacion(id) {
-  const cot = cotizaciones.find(c => c.id == id);
-  if (!cot) return;
-  document.getElementById('cotizacionId').value = cot.id;
-  document.getElementById('nombre').value = cot.nombre;
-  document.getElementById('telefono').value = cot.telefono;
-  document.getElementById('fecha').value = cot.fecha;
-  document.getElementById('notas').value = cot.notas;
-  document.querySelector('#tablaProductos tbody').innerHTML = '';
-  cot.productos.forEach(p => agregarFila(p.cant, p.desc, p.precio));
-  calcular();
-  window.scrollTo(0, 0);
-}
-
-function borrarCotizacion(id) {
-  if (confirm('¿Borrar esta cotización?')) {
-    cotizaciones = cotizaciones.filter(c => c.id!= id);
-    localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
-    mostrarHistorial();
-  }
-}
-
-function mostrarHistorial() {
-  const lista = document.getElementById('listaHistorial');
-  if (cotizaciones.length === 0) {
-    lista.innerHTML = '<p>No hay cotizaciones guardadas</p>';
-    return;
-  }
-  lista.innerHTML = [...cotizaciones].reverse().map(c => `
-    <div class="historial-item">
-      <div><strong>${c.nombre}</strong> - ${c.fecha} - ${c.total}</div>
-      <div>
-        <button onclick="cargarCotizacion(${c.id})" style="background:#2e7d32;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">Editar</button>
-        <button onclick="borrarCotizacion(${c.id})" style="background:#c62828;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">Borrar</button>
-      </div>
+  <div class="container">
+    <h1>Cotizador Agropecuaria y Ferretería San Isidro</h1>
+    
+    <div class="form-group">
+      <label>Producto</label>
+      <input type="text" id="producto" placeholder="Ej: Cemento, Fertilizante">
     </div>
-  `).join('');
-}
 
-function limpiarFormulario() {
-  document.getElementById('cotizacionId').value = '';
-  document.getElementById('nombre').value = '';
-  document.getElementById('telefono').value = '';
-  document.getElementById('fecha').valueAsDate = new Date();
-  document.getElementById('notas').value = '';
-  document.querySelector('#tablaProductos tbody').innerHTML = '';
-  agregarFila();
-  calcular();
-}
+    <div class="form-group">
+      <label>Cantidad</label>
+      <input type="number" id="cantidad" placeholder="0" min="0">
+    </div>
 
-document.getElementById('btnPDF').addEventListener('click', function() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const nombre = document.getElementById('nombre').value || "Cliente";
-  const telefono = document.getElementById('telefono').value || "";
-  const fecha = document.getElementById('fecha').value || new Date().toLocaleDateString('es-HN');
-  const notas = document.getElementById('notas').value;
-  const totalTexto = document.getElementById('totalCotizado').innerText;
+    <div class="form-group">
+      <label>Precio Unitario Q</label>
+      <input type="number" id="precio" placeholder="0.00" step="0.01" min="0">
+    </div>
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.setTextColor(46, 125, 50);
-  doc.text("COTIZACIÓN", 105, 25, { align: "center" });
+    <button onclick="calcular()">Calcular Cotización</button>
+    <button onclick="window.print()" style="background:#555">Imprimir / Guardar PDF</button>
 
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(11);
-  doc.setTextColor(100);
-  doc.text("AGROPECUARIA Y FERRETERÍA SAN ISIDRO", 105, 35, { align: "center" });
-  doc.text('"Todo para el campo y la construcción"', 105, 42, { align: "center" });
+    <div class="resultado" id="resultado">
+      <h3>Resumen de Cotización</h3>
+      <p><strong>Producto:</strong> <span id="r-producto"></span></p>
+      <p><strong>Cantidad:</strong> <span id="r-cantidad"></span></p>
+      <p><strong>Precio Unitario:</strong> Q<span id="r-precio"></span></p>
+      <p class="precio">Total: Q<span id="r-total"></span></p>
+      <div class="atendido">Atendido por: MELVIN LEMUS</div>
+    </div>
+  </div>
 
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(0);
-  doc.setFontSize(11);
-  doc.rect(15, 50, 60, 8);
-  doc.rect(80, 50, 60, 8);
-  doc.rect(145, 50, 50, 8);
-  doc.text(nombre, 18, 55);
-  doc.text(telefono, 83, 55);
-  doc.text(fecha, 148, 55);
+  <script>
+    function calcular(){
+      const producto = document.getElementById('producto').value;
+      const cantidad = parseFloat(document.getElementById('cantidad').value) || 0;
+      const precio = parseFloat(document.getElementById('precio').value) || 0;
+      const total = cantidad * precio;
 
-  let productos = [];
-  let startY = 65;
-  document.querySelectorAll('#tablaProductos tbody tr').forEach(fila => {
-    const inputs = fila.querySelectorAll('input');
-    const cant = inputs[0].value;
-    const desc = inputs[1].value;
-    const precio = parseFloat(inputs[2].value) || 0;
-    const subtotal = parseFloat(fila.querySelector('.total-cell').innerText.replace(/[^0-9.-]+/g,"")) || 0;
-    if (desc && desc.trim()!== "") {
-      productos.push([cant, desc, precio? precio : "", `L ${formatearNumero(subtotal)}`]);
+      document.getElementById('r-producto').textContent = producto;
+      document.getElementById('r-cantidad').textContent = cantidad;
+      document.getElementById('r-precio').textContent = precio.toFixed(2);
+      document.getElementById('r-total').textContent = total.toFixed(2);
+      document.getElementById('resultado').style.display = 'block';
     }
-  });
 
-  doc.autoTable({
-    startY: startY,
-    head: [['Cant.', 'Descripción', 'Precio U.', 'Total']],
-    body: productos,
-    theme: 'grid',
-    headStyles: { fillColor: [245, 245, 245], textColor: [136, 136, 136], fontSize: 11 },
-    styles: { fontSize: 11, cellPadding: 4 },
-    columnStyles: {
-      0: { cellWidth: 25 },
-      2: { cellWidth: 35 },
-      3: { cellWidth: 40, halign: 'right' }
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('./sw.js');
     }
-  });
-
-  let finalY = doc.lastAutoTable.finalY + 15;
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.text(`TOTAL COTIZADO: ${totalTexto}`, 195, finalY, { align: "right" });
-
-  if (notas && notas.trim()!== "") {
-    finalY += 20;
-    doc.setFontSize(11);
-    doc.text("NOTAS:", 15, finalY);
-    doc.setFont("helvetica", "normal");
-    doc.rect(15, finalY + 3, 180, 20);
-    doc.text(doc.splitTextToSize(notas, 175), 18, finalY + 8);
-  }
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Atendido por: MELVIN LEMUS", 15, finalY + 35);
-
-  const nombreArchivo = `Cotizacion_${nombre.replace(/\s+/g, '_')}.pdf`;
-  doc.save(nombreArchivo);
-});
-
-document.getElementById('fecha').valueAsDate = new Date();
-agregarFila();
-mostrarHistorial();
-
-// Registrar Service Worker para PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js');
-  });
-}
-</script>
+  </script>
 </body>
-    </html>
+</html>
