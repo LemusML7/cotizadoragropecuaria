@@ -1,201 +1,450 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#2e7d32">
-  <title>Cotizador San Isidro</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="launchericon-192x192.png">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-    body{background:linear-gradient(135deg,#2e7d32 0%,#66bb6a 100%);min-height:100vh;padding:15px}
-    .container{max-width:900px;margin:0 auto;background:white;padding:25px;border-radius:15px;box-shadow:0 8px 30px rgba(0,0,0,0.2)}
-    .header{text-align:center;margin-bottom:25px}
-    .header h1{color:#2e7d32;font-size:28px;margin-bottom:5px}
-    .header p{color:#666;font-size:14px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px}
-    @media(max-width:768px){.grid{grid-template-columns:1fr}}
-    .form-group{margin-bottom:15px}
-    label{display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px}
-    input,select,textarea{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;transition:0.3s}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:#2e7d32}
-    .btn-group{display:flex;gap:10px;margin-top:20px}
-    button{flex:1;background:#2e7d32;color:white;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:0.3s}
-    button:hover{background:#1b5e20;transform:translateY(-2px)}
-    button.secondary{background:#757575}
-    button.secondary:hover{background:#616161}
-    .tabla{width:100%;border-collapse:collapse;margin-top:20px}
-    .tabla th{background:#2e7d32;color:white;padding:12px;text-align:left;font-size:14px}
-    .tabla td{padding:12px;border-bottom:1px solid #e0e0e0}
-    .tabla tr:hover{background:#f5f5f5}
-    .total-box{background:#e8f5e9;padding:20px;border-radius:10px;margin-top:20px;text-align:center}
-    .total-label{font-size:16px;color:#333;margin-bottom:5px}
-    .total-amount{font-size:36px;font-weight:700;color:#2e7d32}
-    .atendido{margin-top:20px;text-align:center;color:#555;font-size:14px;border-top:2px solid #e0e0e0;padding-top:15px}
-    .resultado{display:none}
-    @media print{.btn-group,.form-group{display:none}.container{box-shadow:none}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotizador Agropecuaria San Isidro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+    * {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    padding: 20px;
+    background: #f5f5f5;
+    margin: 0;
+  }
+
+ .container {
+    max-width: 850px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+  }
+
+ .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+ .header h1 {
+    color: #2e7d32;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    letter-spacing: 1px;
+  }
+
+ .header p {
+    color: #666;
+    font-size: 14px;
+    margin: 5px 0;
+    font-style: italic;
+  }
+
+ .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+ .form-row input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  table, th, td {
+    border: 1px solid #ddd;
+  }
+
+  th {
+    background: #f5f5f5;
+    color: #888;
+    font-weight: normal;
+    font-size: 14px;
+    padding: 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 5px;
+  }
+
+  td input {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    font-size: 14px;
+    border-radius: 3px;
+  }
+
+  td.total-cell {
+    font-weight: bold;
+    font-size: 15px;
+    text-align: right;
+    padding-right: 15px;
+  }
+
+ .btn-add {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+ .total-section {
+    text-align: right;
+    margin: 30px 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+ .notas-section {
+    margin-top: 30px;
+  }
+
+ .notas-section label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+ .notas-section textarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 10px;
+    min-height: 60px;
+    resize: vertical;
+  }
+
+ .firma {
+    margin-top: 30px;
+    font-weight: bold;
+  }
+
+ .botones {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+ .botones button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+ .btn-save { background: #2e7d32; color: white; }
+ .btn-pdf { background: #1976d2; color: white; }
+ .btn-print { background: #555; color: white; }
+ .btn-new { background: #888; color: white; }
+
+ .historial {
+    margin-top: 40px;
+    border-top: 2px solid #2e7d32;
+    padding-top: 20px;
+  }
+
+ .historial-item {
+    background: #f9f9f9;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+ .no-print {
+    display: block;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+   .container { padding: 20px; box-shadow: none; }
+   .no-print { display: none!important; }
+    input, textarea { border: none; padding: 0; }
+    td input { border: none; }
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Agropecuaria y Ferretería San Isidro</h1>
-      <p>Sistema de Cotización Rápida</p>
-    </div>
-    
-    <div id="formulario">
-      <div class="grid">
-        <div class="form-group">
-          <label>Cliente</label>
-          <input type="text" id="cliente" placeholder="Nombre del cliente">
-        </div>
-        <div class="form-group">
-          <label>Fecha</label>
-          <input type="date" id="fecha">
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="form-group">
-          <label>Producto</label>
-          <input type="text" id="producto" placeholder="Ej: Cemento Portland 50kg">
-        </div>
-        <div class="form-group">
-          <label>Categoría</label>
-          <select id="categoria">
-            <option>Agropecuario</option>
-            <option>Ferretería</option>
-            <option>Construcción</option>
-            <option>Jardín</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="form-group">
-          <label>Cantidad</label>
-          <input type="number" id="cantidad" placeholder="0" min="0" step="1">
-        </div>
-        <div class="form-group">
-          <label>Precio Unitario Q</label>
-          <input type="number" id="precio" placeholder="0.00" step="0.01" min="0">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Notas</label>
-        <textarea id="notas" rows="2" placeholder="Observaciones adicionales"></textarea>
-      </div>
-
-      <div class="btn-group">
-        <button onclick="agregarProducto()">+ Agregar Producto</button>
-        <button class="secondary" onclick="limpiar()">Limpiar</button>
-      </div>
-    </div>
-
-    <div id="resultado" class="resultado">
-      <table class="tabla" id="tabla">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Cant.</th>
-            <th>P. Unit</th>
-            <th>Subtotal</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-body"></tbody>
-      </table>
-
-      <div class="total-box">
-        <div class="total-label">Total Cotización</div>
-        <div class="total-amount">Q<span id="total">0.00</span></div>
-      </div>
-
-      <div class="btn-group">
-        <button onclick="window.print()">Imprimir / Guardar PDF</button>
-        <button class="secondary" onclick="nuevaCotizacion()">Nueva Cotización</button>
-      </div>
-
-      <div class="atendido">
-        <strong>Cliente:</strong> <span id="r-cliente"></span><br>
-        <strong>Fecha:</strong> <span id="r-fecha"></span><br>
-        Atendido por: <strong>MELVIN LEMUS</strong>
-      </div>
-    </div>
+<div class="container">
+  <div class="header">
+    <h1>COTIZACIÓN</h1>
+    <p>AGROPECUARIA Y FERRETERÍA SAN ISIDRO</p>
+    <p>"Todo para el campo y la construcción"</p>
   </div>
 
-  <script>
-    let productos = [];
-    let total = 0;
+  <input type="hidden" id="cotizacionId">
 
-    document.getElementById('fecha').valueAsDate = new Date();
+  <div class="form-row">
+    <input type="text" id="nombre" placeholder="Cliente ">
+    <input type="text" id="telefono" placeholder="Teléfono">
+    <input type="date" id="fecha">
+  </div>
 
-    function agregarProducto(){
-      const producto = document.getElementById('producto').value;
-      const categoria = document.getElementById('categoria').value;
-      const cantidad = parseFloat(document.getElementById('cantidad').value) || 0;
-      const precio = parseFloat(document.getElementById('precio').value) || 0;
+  <table id="tablaProductos">
+    <thead>
+      <tr>
+        <th style="width: 80px;">Cant.</th>
+        <th>Descripción</th>
+        <th style="width: 120px;">Precio U.</th>
+        <th style="width: 150px;">Total</th>
+        <th class="no-print" style="width: 40px;"></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-      if(!producto || cantidad <= 0 || precio <= 0){
-        alert('Completa todos los campos del producto');
-        return;
-      }
+  <button class="btn-add no-print" onclick="agregarFila()">+ Agregar Producto</button>
 
-      const subtotal = cantidad * precio;
-      productos.push({producto,categoria,cantidad,precio,subtotal});
-      total += subtotal;
+  <div class="total-section">
+    TOTAL COTIZADO: <span id="totalCotizado">L 0.00</span>
+  </div>
 
-      actualizarTabla();
-      limpiarCampos();
-      document.getElementById('resultado').style.display = 'block';
+  <div class="notas-section">
+    <label>NOTAS:</label>
+    <textarea id="notas" placeholder=""></textarea>
+  </div>
+<div class="firma">
+  Atendido por: <span id="atendidoPor">MELVIN LEMUS</span>
+</div>
+ 
+
+  <div class="botones no-print">
+    <button class="btn-save" onclick="guardarCotizacion()">💾 Guardar</button>
+    <button class="btn-pdf" id="btnPDF">📄 Guardar PDF</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn-new" onclick="limpiarFormulario()">🆕 Nueva</button>
+  </div>
+
+  <div class="historial no-print">
+    <h3>Historial de Cotizaciones</h3>
+    <div id="listaHistorial"></div>
+  </div>
+</div>
+
+<script>
+let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+
+function formatearNumero(num) {
+  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function agregarFila(cant="", desc="", precio="") {
+  const tbody = document.querySelector('#tablaProductos tbody');
+  const fila = document.createElement('tr');
+  fila.innerHTML = `
+    <td><input type="number" value="${cant}" oninput="calcular()"></td>
+    <td><input type="text" value="${desc}" placeholder="" oninput="calcular()"></td>
+    <td><input type="number" value="${precio}" oninput="calcular()"></td>
+    <td class="total-cell">L 0.00</td>
+    <td class="no-print"><button onclick="this.closest('tr').remove(); calcular()" style="background:#c62828;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">X</button></td>
+  `;
+  tbody.appendChild(fila);
+  calcular();
+}
+
+function calcular() {
+  let total = 0;
+  document.querySelectorAll('#tablaProductos tbody tr').forEach(fila => {
+    const inputs = fila.querySelectorAll('input');
+    const cant = parseFloat(inputs[0].value) || 0;
+    const precio = parseFloat(inputs[2].value) || 0;
+    const subtotal = cant * precio;
+    fila.querySelector('.total-cell').innerText = `L ${formatearNumero(subtotal)}`;
+    total += subtotal;
+  });
+  document.getElementById('totalCotizado').innerText = `L ${formatearNumero(total)}`;
+}
+
+function guardarCotizacion() {
+  const id = document.getElementById('cotizacionId').value || Date.now();
+  const datos = {
+    id: id,
+    nombre: document.getElementById('nombre').value,
+    telefono: document.getElementById('telefono').value,
+    fecha: document.getElementById('fecha').value,
+    notas: document.getElementById('notas').value,
+    productos: [],
+    total: document.getElementById('totalCotizado').innerText
+  };
+
+  document.querySelectorAll('#tablaProductos tbody tr').forEach(fila => {
+    const inputs = fila.querySelectorAll('input');
+    datos.productos.push({
+      cant: inputs[0].value,
+      desc: inputs[1].value,
+      precio: inputs[2].value,
+      subtotal: fila.querySelector('.total-cell').innerText
+    });
+  });
+
+  const index = cotizaciones.findIndex(c => c.id == id);
+  if (index >= 0) cotizaciones[index] = datos;
+  else cotizaciones.push(datos);
+
+  localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
+  mostrarHistorial();
+  alert('Cotización guardada');
+}
+
+function cargarCotizacion(id) {
+  const cot = cotizaciones.find(c => c.id == id);
+  if (!cot) return;
+
+  document.getElementById('cotizacionId').value = cot.id;
+  document.getElementById('nombre').value = cot.nombre;
+  document.getElementById('telefono').value = cot.telefono;
+  document.getElementById('fecha').value = cot.fecha;
+  document.getElementById('notas').value = cot.notas;
+
+  document.querySelector('#tablaProductos tbody').innerHTML = '';
+  cot.productos.forEach(p => agregarFila(p.cant, p.desc, p.precio));
+  calcular();
+  window.scrollTo(0, 0);
+}
+
+function borrarCotizacion(id) {
+  if (confirm('¿Borrar esta cotización?')) {
+    cotizaciones = cotizaciones.filter(c => c.id!= id);
+    localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
+    mostrarHistorial();
+  }
+}
+
+function mostrarHistorial() {
+  const lista = document.getElementById('listaHistorial');
+  if (cotizaciones.length === 0) {
+    lista.innerHTML = '<p>No hay cotizaciones guardadas</p>';
+    return;
+  }
+  lista.innerHTML = [...cotizaciones].reverse().map(c => `
+    <div class="historial-item">
+      <div><strong>${c.nombre}</strong> - ${c.fecha} - ${c.total}</div>
+      <div>
+        <button onclick="cargarCotizacion(${c.id})" style="background:#2e7d32;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">Editar</button>
+        <button onclick="borrarCotizacion(${c.id})" style="background:#c62828;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">Borrar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function limpiarFormulario() {
+  document.getElementById('cotizacionId').value = '';
+  document.getElementById('nombre').value = '';
+  document.getElementById('telefono').value = '';
+  document.getElementById('fecha').valueAsDate = new Date();
+  document.getElementById('notas').value = '';
+  document.querySelector('#tablaProductos tbody').innerHTML = '';
+  agregarFila();
+  calcular();
+}
+
+document.getElementById('btnPDF').addEventListener('click', function() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const nombre = document.getElementById('nombre').value || "Cliente";
+  const telefono = document.getElementById('telefono').value || "";
+  const fecha = document.getElementById('fecha').value || new Date().toLocaleDateString('es-HN');
+  const notas = document.getElementById('notas').value;
+  const totalTexto = document.getElementById('totalCotizado').innerText;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(46, 125, 50);
+  doc.text("COTIZACIÓN", 105, 25, { align: "center" });
+
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(11);
+  doc.setTextColor(100);
+  doc.text("AGROPECUARIA Y FERRETERÍA SAN ISIDRO", 105, 35, { align: "center" });
+  doc.text('"Todo para el campo y la construcción"', 105, 42, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(0);
+  doc.setFontSize(11);
+  doc.rect(15, 50, 60, 8);
+  doc.rect(80, 50, 60, 8);
+  doc.rect(145, 50, 50, 8);
+  doc.text(nombre, 18, 55);
+  doc.text(telefono, 83, 55);
+  doc.text(fecha, 148, 55);
+
+  let productos = [];
+  let startY = 65;
+  document.querySelectorAll('#tablaProductos tbody tr').forEach(fila => {
+    const inputs = fila.querySelectorAll('input');
+    const cant = inputs[0].value;
+    const desc = inputs[1].value;
+    const precio = parseFloat(inputs[2].value) || 0;
+    const subtotal = parseFloat(fila.querySelector('.total-cell').innerText.replace(/[^0-9.-]+/g,"")) || 0;
+    if (desc && desc.trim()!== "") {
+      productos.push([cant, desc, precio? precio : "", `L ${formatearNumero(subtotal)}`]);
     }
+  });
 
-    function actualizarTabla(){
-      const tbody = document.getElementById('tabla-body');
-      tbody.innerHTML = '';
-      productos.forEach(p => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${p.producto}</td>
-            <td>${p.categoria}</td>
-            <td>${p.cantidad}</td>
-            <td>Q${p.precio.toFixed(2)}</td>
-            <td>Q${p.subtotal.toFixed(2)}</td>
-          </tr>
-        `;
-      });
-      document.getElementById('total').textContent = total.toFixed(2);
-      document.getElementById('r-cliente').textContent = document.getElementById('cliente').value || 'Consumidor Final';
-      document.getElementById('r-fecha').textContent = document.getElementById('fecha').value;
+  doc.autoTable({
+    startY: startY,
+    head: [['Cant.', 'Descripción', 'Precio U.', 'Total']],
+    body: productos,
+    theme: 'grid',
+    headStyles: { fillColor: [245, 245, 245], textColor: [136, 136, 136], fontSize: 11 },
+    styles: { fontSize: 11, cellPadding: 4 },
+    columnStyles: {
+      0: { cellWidth: 25 },
+      2: { cellWidth: 35 },
+      3: { cellWidth: 40, halign: 'right' }
     }
+  });
 
-    function limpiarCampos(){
-      document.getElementById('producto').value = '';
-      document.getElementById('cantidad').value = '';
-      document.getElementById('precio').value = '';
-      document.getElementById('notas').value = '';
-    }
+  let finalY = doc.lastAutoTable.finalY + 15;
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text(`TOTAL COTIZADO: ${totalTexto}`, 195, finalY, { align: "right" });
 
-    function limpiar(){
-      if(confirm('¿Limpiar toda la cotización?')){
-        productos = [];
-        total = 0;
-        actualizarTabla();
-        document.getElementById('resultado').style.display = 'none';
-      }
-    }
+  if (notas && notas.trim()!== "") {
+    finalY += 20;
+    doc.setFontSize(11);
+    doc.text("NOTAS:", 15, finalY);
+    doc.setFont("helvetica", "normal");
+    doc.rect(15, finalY + 3, 180, 20);
+    doc.text(doc.splitTextToSize(notas, 175), 18, finalY + 8);
+  }
 
-    function nuevaCotizacion(){
-      limpiar();
-      document.getElementById('cliente').value = '';
-      document.getElementById('fecha').valueAsDate = new Date();
-    }
+  doc.setFont("helvetica", "bold");
+  doc.text("Atendido por: _________________________", 15, finalY + 35);
 
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('./sw.js');
-    }
-  </script>
+  const nombreArchivo = `Cotizacion_${nombre.replace(/\s+/g, '_')}.pdf`;
+  doc.save(nombreArchivo);
+});
+
+document.getElementById('fecha').valueAsDate = new Date();
+agregarFila();
+mostrarHistorial();
+</script>
 </body>
-          </html>
+</html>
